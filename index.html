@@ -407,15 +407,13 @@
             // N8N FORM TRIGGER PRODUCTION URL
             const formUrl = 'https://neuromexago.app.n8n.cloud/form/16fd62d6-548e-4a1e-8711-fbf9154b164d';
 
-            // Supabase field names ile eşleşen formData
+            // N8n'deki field name'leri ile eşleşen formData (Türkçe)
             const formData = {
-                company_name: document.getElementById('dealerName').value,
-                auth_type: document.getElementById('dealerNumber').value,
-                password: document.getElementById('dealerPassword').value,
-                email: document.getElementById('dealerEmail').value,
-                is_active: true,
-                created_at: new Date().toISOString(),
-                language: currentLang
+                'Bayi Adı': document.getElementById('dealerName').value,
+                'Bayi Numarası': document.getElementById('dealerNumber').value,
+                'Bayi Şifresi': document.getElementById('dealerPassword').value,
+                'Bayi email': document.getElementById('dealerEmail').value,
+                'submittedAt': new Date().toISOString()
             };
 
             const submitBtn = document.getElementById('submitBtn');
