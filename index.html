@@ -404,16 +404,19 @@
         document.getElementById('dealerForm').addEventListener('submit', async function(e) {
             e.preventDefault();
 
-           const formData = {
-    company_name: document.getElementById('dealerName').value,
-    auth_type: document.getElementById('dealerNumber').value,
-    password: document.getElementById('dealerPassword').value,
-    email: document.getElementById('dealerEmail').value,
-    is_active: true,
-    created_at: new Date().toISOString()
-};
+            // N8N FORM TRIGGER PRODUCTION URL
+            const formUrl = 'https://neuromexago.app.n8n.cloud/form/16fd62d6-548e-4a1e-8711-fbf9154b164d';
 
-            const webhookUrl = 'https://neuromexago.app.n8n.cloud/webhook/93623d4b-6fc2-43d1-864d-961a52e94d6f';
+            // Supabase field names ile eşleşen formData
+            const formData = {
+                company_name: document.getElementById('dealerName').value,
+                auth_type: document.getElementById('dealerNumber').value,
+                password: document.getElementById('dealerPassword').value,
+                email: document.getElementById('dealerEmail').value,
+                is_active: true,
+                created_at: new Date().toISOString(),
+                language: currentLang
+            };
 
             const submitBtn = document.getElementById('submitBtn');
             const loading = document.getElementById('loading');
@@ -426,7 +429,7 @@
             errorMessage.classList.remove('show');
 
             try {
-                const response = await fetch(webhookUrl, {
+                const response = await fetch(formUrl, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -434,14 +437,23 @@
                     body: JSON.stringify(formData)
                 });
 
+                console.log('Response status:', response.status);
+
                 if (response.ok) {
                     successMessage.classList.add('show');
                     document.getElementById('dealerForm').reset();
+                    
+                    // 3 saniye sonra success mesajını gizle
+                    setTimeout(() => {
+                        successMessage.classList.remove('show');
+                    }, 3000);
                 } else {
+                    const errorText = await response.text();
+                    console.error('Server error:', errorText);
                     errorMessage.classList.add('show');
                 }
             } catch (error) {
-                console.error('Error:', error);
+                console.error('Fetch error:', error);
                 errorMessage.classList.add('show');
             } finally {
                 loading.classList.remove('show');
