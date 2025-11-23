@@ -407,13 +407,14 @@
             // N8N WEBHOOK PRODUCTION URL
             const formUrl = 'https://neuromexago.app.n8n.cloud/webhook/bayi-kayit';
 
-            // N8n'deki field name'leri ile eşleşen formData (Türkçe)
+            // Basitleştirilmiş field names (Türkçe karakter yok)
             const formData = {
-                'Bayi Adı': document.getElementById('dealerName').value,
-                'Bayi Numarası': document.getElementById('dealerNumber').value,
-                'Bayi Şifresi': document.getElementById('dealerPassword').value,
-                'Bayi email': document.getElementById('dealerEmail').value,
-                'submittedAt': new Date().toISOString()
+                company_name: document.getElementById('dealerName').value,
+                auth_type: document.getElementById('dealerNumber').value,
+                password: document.getElementById('dealerPassword').value,
+                email: document.getElementById('dealerEmail').value || 'default@email.com',
+                created_at: new Date().toISOString(),
+                is_active: true
             };
 
             const submitBtn = document.getElementById('submitBtn');
