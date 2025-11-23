@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bayi Ekleme Platformu</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            pointer-events: none;
+            opacity: 0.6;
+            animation: float 15s infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-100px) rotate(180deg); }
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+            position: relative;
+            z-index: 1;
+            animation: slideIn 0.6s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            color: #667eea;
+            font-size: 2.5em;
+            font-weight: 700;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        .language-selector {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        .lang-btn {
+            padding: 10px 20px;
+            border: 2px solid #667eea;
+            background: transparent;
+            color: #667eea;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .lang-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .lang-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: transparent;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .required {
+            color: #ff6b6b;
+            margin-left: 4px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .form-group input::placeholder {
+            color: #aaa;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        .submit-btn:active {
+            transform: translateY(-1px);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .success-message {
+            display: none;
+            padding: 20px;
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+            border-radius: 12px;
+            text-align: center;
+            margin-top: 20px;
+            font-weight: 600;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        .success-message.show {
+            display: block;
+        }
+
+        .error-message {
+            display: none;
+            padding: 20px;
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+            color: white;
+            border-radius: 12px;
+            text-align: center;
+            margin-top: 20px;
+            font-weight: 600;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .loading.show {
+            display: block;
+        }
+
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 30px 20px;
+            }
+
+            .header h1 {
+                font-size: 2em;
+            }
+
+            .lang-btn {
+                padding: 8px 16px;
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="particle" style="width: 80px; height: 80px; background: rgba(255,255,255,0.1); top: 10%; left: 10%; animation-delay: 0s;"></div>
+    <div class="particle" style="width: 60px; height: 60px; background: rgba(255,255,255,0.1); top: 70%; left: 80%; animation-delay: 2s;"></div>
+    <div class="particle" style="width: 40px; height: 40px; background: rgba(255,255,255,0.1); top: 40%; left: 90%; animation-delay: 4s;"></div>
+
+    <div class="container">
+        <div class="header">
+            <h1 id="mainTitle">Bayi Ekleme</h1>
+            <p id="subtitle">Bayi ekleme platformu</p>
+        </div>
+
+        <div class="language-selector">
+            <button class="lang-btn active" data-lang="tr">🇹🇷 Türkçe</button>
+            <button class="lang-btn" data-lang="en">🇬🇧 English</button>
+            <button class="lang-btn" data-lang="de">🇩🇪 Deutsch</button>
+        </div>
+
+        <form id="dealerForm">
+            <div class="form-group">
+                <label id="labelName">
+                    <span id="textDealerName">Bayi adı</span>
+                    <span class="required">*</span>
+                </label>
+                <input type="text" id="dealerName" required>
+            </div>
+
+            <div class="form-group">
+                <label id="labelNumber">
+                    <span id="textDealerNumber">Bayi Numarası</span>
+                    <span class="required">*</span>
+                </label>
+                <input type="text" id="dealerNumber" required>
+            </div>
+
+            <div class="form-group">
+                <label id="labelPassword">
+                    <span id="textDealerPassword">Bayi Şifresi</span>
+                    <span class="required">*</span>
+                </label>
+                <input type="password" id="dealerPassword" placeholder="Sadece sayı" required>
+            </div>
+
+            <div class="form-group">
+                <label id="labelEmail">
+                    <span id="textDealerEmail">Bayi Mail</span>
+                </label>
+                <input type="email" id="dealerEmail">
+            </div>
+
+            <button type="submit" class="submit-btn" id="submitBtn">
+                <span id="btnText">Gönder</span>
+            </button>
+        </form>
+
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p id="loadingText" style="margin-top: 10px; color: #667eea; font-weight: 600;">Gönderiliyor...</p>
+        </div>
+
+        <div class="success-message" id="successMessage">
+            <span id="successText">✓ Form başarıyla gönderildi!</span>
+        </div>
+
+        <div class="error-message" id="errorMessage">
+            <span id="errorText">✗ Bir hata oluştu. Lütfen tekrar deneyin.</span>
+        </div>
+    </div>
+
+    <script>
+        const translations = {
+            tr: {
+                mainTitle: 'Bayi Ekleme',
+                subtitle: 'Bayi ekleme platformu',
+                dealerName: 'Bayi adı',
+                dealerNumber: 'Bayi Numarası',
+                dealerPassword: 'Bayi Şifresi',
+                dealerEmail: 'Bayi Mail',
+                passwordPlaceholder: 'Sadece sayı',
+                btnText: 'Gönder',
+                loadingText: 'Gönderiliyor...',
+                successText: '✓ Form başarıyla gönderildi!',
+                errorText: '✗ Bir hata oluştu. Lütfen tekrar deneyin.'
+            },
+            en: {
+                mainTitle: 'Add Dealer',
+                subtitle: 'Dealer registration platform',
+                dealerName: 'Dealer Name',
+                dealerNumber: 'Dealer Number',
+                dealerPassword: 'Dealer Password',
+                dealerEmail: 'Dealer Email',
+                passwordPlaceholder: 'Numbers only',
+                btnText: 'Submit',
+                loadingText: 'Sending...',
+                successText: '✓ Form submitted successfully!',
+                errorText: '✗ An error occurred. Please try again.'
+            },
+            de: {
+                mainTitle: 'Händler Hinzufügen',
+                subtitle: 'Händler-Registrierungsplattform',
+                dealerName: 'Händlername',
+                dealerNumber: 'Händlernummer',
+                dealerPassword: 'Händlerpasswort',
+                dealerEmail: 'Händler E-Mail',
+                passwordPlaceholder: 'Nur Zahlen',
+                btnText: 'Senden',
+                loadingText: 'Wird gesendet...',
+                successText: '✓ Formular erfolgreich gesendet!',
+                errorText: '✗ Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut.'
+            }
+        };
+
+        let currentLang = 'tr';
+
+        document.querySelectorAll('.lang-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                currentLang = this.dataset.lang;
+                updateLanguage();
+            });
+        });
+
+        function updateLanguage() {
+            const lang = translations[currentLang];
+            document.getElementById('mainTitle').textContent = lang.mainTitle;
+            document.getElementById('subtitle').textContent = lang.subtitle;
+            document.getElementById('textDealerName').textContent = lang.dealerName;
+            document.getElementById('textDealerNumber').textContent = lang.dealerNumber;
+            document.getElementById('textDealerPassword').textContent = lang.dealerPassword;
+            document.getElementById('textDealerEmail').textContent = lang.dealerEmail;
+            document.getElementById('dealerPassword').placeholder = lang.passwordPlaceholder;
+            document.getElementById('btnText').textContent = lang.btnText;
+            document.getElementById('loadingText').textContent = lang.loadingText;
+            document.getElementById('successText').textContent = lang.successText;
+            document.getElementById('errorText').textContent = lang.errorText;
+        }
+
+        document.getElementById('dealerForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const formData = {
+                dealerName: document.getElementById('dealerName').value,
+                dealerNumber: document.getElementById('dealerNumber').value,
+                dealerPassword: document.getElementById('dealerPassword').value,
+                dealerEmail: document.getElementById('dealerEmail').value,
+                language: currentLang,
+                timestamp: new Date().toISOString()
+            };
+
+            const webhookUrl = 'https://neuromexago.app.n8n.cloud/webhook/93623d4b-6fc2-43d1-864d-961a52e94d6f';
+
+            const submitBtn = document.getElementById('submitBtn');
+            const loading = document.getElementById('loading');
+            const successMessage = document.getElementById('successMessage');
+            const errorMessage = document.getElementById('errorMessage');
+
+            submitBtn.disabled = true;
+            loading.classList.add('show');
+            successMessage.classList.remove('show');
+            errorMessage.classList.remove('show');
+
+            try {
+                const response = await fetch(webhookUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                if (response.ok) {
+                    successMessage.classList.add('show');
+                    document.getElementById('dealerForm').reset();
+                } else {
+                    errorMessage.classList.add('show');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                errorMessage.classList.add('show');
+            } finally {
+                loading.classList.remove('show');
+                submitBtn.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>
