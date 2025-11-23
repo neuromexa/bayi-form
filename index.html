@@ -404,14 +404,14 @@
         document.getElementById('dealerForm').addEventListener('submit', async function(e) {
             e.preventDefault();
 
-            const formData = {
-                dealerName: document.getElementById('dealerName').value,
-                dealerNumber: document.getElementById('dealerNumber').value,
-                dealerPassword: document.getElementById('dealerPassword').value,
-                dealerEmail: document.getElementById('dealerEmail').value,
-                language: currentLang,
-                timestamp: new Date().toISOString()
-            };
+           const formData = {
+    company_name: document.getElementById('dealerName').value,
+    auth_type: document.getElementById('dealerNumber').value,
+    password: document.getElementById('dealerPassword').value,
+    email: document.getElementById('dealerEmail').value,
+    is_active: true,
+    created_at: new Date().toISOString()
+};
 
             const webhookUrl = 'https://neuromexago.app.n8n.cloud/webhook/93623d4b-6fc2-43d1-864d-961a52e94d6f';
 
